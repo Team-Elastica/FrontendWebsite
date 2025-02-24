@@ -1,7 +1,10 @@
+@import "tailwindcss";
+
+/*Header*/
 .header {
   background-color: #282c34;
   padding: 10px;
-  color: white;
+  color: #88a3aa;
   text-align: left;
   text-size-adjust: 200%;
   width: 100%;
@@ -10,16 +13,18 @@
   position: fixed;
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: space-between;
+  z-index: 1000;
 }
 
 .header .logo {
-  height: 60px;
-  /* margin-right: 10px;  */
+  height: 100px;
+  margin-right: -70px; 
 }
 
 .header h1 {
-  font-size: 2.5rem; 
+  font-size: 3rem; 
+  font: bold;
 }
 
 .header-button{
@@ -27,11 +32,53 @@
   border: none;
   color: #282c34;
   padding: 10px 20px;
-  /* text-align: right; */
-  /* text-decoration: none; */
   display: inline-block;
   font-size: 16px;
-  margin-left: 1450px;
+  margin-left: 1350px;
+  margin-right: 20px;
   cursor: pointer;
   border-radius: 4px;
 }
+
+/*Main Content*/
+
+    /*goes here*/
+
+
+/*Result*/
+
+.recommendation-section {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+  margin-top: 200px;
+}
+
+.title {
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.category {
+  margin-bottom: 30px;
+}
+
+h3 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.icon {
+  font-size: 50px;
+  color: #333; /* Dark grey color */
+}
+
