@@ -1,6 +1,6 @@
 .header {
   background-color: #282c34;
-  padding: 20px;
+  padding: 10px;
   color: white;
   text-align: left;
   text-size-adjust: 200%;
@@ -14,25 +14,24 @@
 }
 
 .header .logo {
-  height: 80px;
-  margin-right: 10px; 
+  height: 60px;
+  /* margin-right: 10px;  */
 }
 
 .header h1 {
-  font-size: 3rem; 
-  margin: 0;
+  font-size: 2.5rem; 
 }
 
 .header-button{
   background-color: #88a3aa;
   border: none;
   color: #282c34;
-  padding: 15px 25px;
+  padding: 10px 20px;
   /* text-align: right; */
   /* text-decoration: none; */
   display: inline-block;
   font-size: 16px;
-  margin-left: 1350px;
+  margin-left: 1450px;
   cursor: pointer;
   border-radius: 4px;
 }
