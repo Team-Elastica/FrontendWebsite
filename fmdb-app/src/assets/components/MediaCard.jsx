@@ -1,6 +1,6 @@
 import "../css/MediaCard.css";
 
-//media.url, media.title, media.release_date
+//media.url, media.title, media.release_date, media.hasAddButton
 function MediaCard({media}) {
 
     function onFavouriteClick() {
@@ -10,7 +10,11 @@ function MediaCard({media}) {
     function onCancelClick() {
         alert("clicked on cancel button");
     }
-    
+
+    function onAddClick() {
+        alert("clicked on add button");
+    }
+
     return <div className="media-card">
         <div className = "media-poster">
             <img src={media.url} alt={media.title}></img>
@@ -19,9 +23,15 @@ function MediaCard({media}) {
             <button className="favourite-btn" onClick={onFavouriteClick}>
                 ❤️
             </button>
-            <button className="cancel-btn" onClick={onCancelClick}>
+
+            {/* renders EITHER add or cancel button */}
+            {!media.hasAddButton && <button className="cancel-btn" onClick={onCancelClick}>
                 ❌
-            </button>
+            </button>}
+
+            {media.hasAddButton && <button className="add-btn" onClick={onAddClick}>
+                ➕
+            </button>}
         </div>
 
         <div className="media-info">
