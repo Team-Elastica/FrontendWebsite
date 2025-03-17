@@ -32,3 +32,40 @@
   border-radius: 4px;
   margin-left: auto; /* Pushes button to the right */
 }
+
+/*Result*/
+
+.recommendation-section {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+  margin-top: 200px;
+}
+
+.title {
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.category {
+  margin-bottom: 30px;
+}
+
+h3 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.icon {
+  font-size: 50px;
+  color: #333; /* Dark grey color */
+}
