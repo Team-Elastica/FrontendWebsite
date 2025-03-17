@@ -10,7 +10,7 @@
   width: 100%;
   top: 0;
   left: 0;
-  position: fixed;
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,17 +27,19 @@
   font: bold;
 }
 
-.header-button{
+.header-button {
   background-color: #88a3aa;
   border: none;
   color: #282c34;
   padding: 10px 20px;
+  /* text-align: right; */
+  /* text-decoration: none; */
   display: inline-block;
   font-size: 16px;
-  margin-left: 1350px;
-  margin-right: 20px;
+  margin-left: 1450px;
   cursor: pointer;
   border-radius: 4px;
+  margin-left: auto; /* Pushes button to the right */
 }
 
 /*Main Content*/
