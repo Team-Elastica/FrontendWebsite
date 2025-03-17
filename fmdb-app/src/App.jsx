@@ -28,6 +28,9 @@ function App() {
       <Header />
       <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
       <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
+      <section>
+        <Result />
+      </section>
     </>
   );
 }
