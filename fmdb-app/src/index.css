@@ -46,10 +46,11 @@
 
 .recommendation-section {
   max-width: 800px;
-  margin: 20px auto;
+  margin: 100px auto;
   padding: 20px;
   text-align: center;
-  margin-top: 200px;
+  position: absolute;
+  top: 1400px;  /* Moves it 50px downward */
 }
 
 .title {

@@ -7,6 +7,8 @@ import Result from './Result';
 import Input from './Input';
 import MediaCard from './assets/components/MediaCard';
 import Cart from './Cart';
+import Result from './Result';
+
 function App() {
   /*cart of movies user chooses*/
   const [cart, setCart] = useState([]);
@@ -31,10 +33,8 @@ function App() {
       <Header />
       <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
       <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
-      <section>
-        <Result />
-      </section>
-    </>
+      <Result />
+    </div>
   );
 }
 
