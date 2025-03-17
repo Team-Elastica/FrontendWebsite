@@ -42,11 +42,6 @@
   margin-left: auto; /* Pushes button to the right */
 }
 
-/*Main Content*/
-
-    /*goes here*/
-
-
 /*Result*/
 
 .recommendation-section {
@@ -83,4 +78,3 @@ h3 {
   font-size: 50px;
   color: #333; /* Dark grey color */
 }
-
