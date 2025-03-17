@@ -5,9 +5,12 @@
   background-color: #1a1a1a;
   transition: transform 0.2s;
   height: 100%;
-  width: 150%;
+  width: 100%; /* Changed from 150% to prevent overflow */
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+  margin: 0 auto;
 }
   
   .media-card:hover {
@@ -53,9 +56,9 @@
   .favourite-btn {
     position: absolute;
     top: 0rem;
-    left: 4.5rem;
+    right: 0rem; /* Corner right */
     color: white;
-    font-size: 1.5rem;
+    font-size: 1rem;
     padding: 0.5rem;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 50%;
@@ -65,6 +68,8 @@
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
   }
   
   .favourite-btn:hover {
@@ -75,12 +80,12 @@
     color: #ff4757;
   }
   
-  .cancel-btn {
+  .cancel-btn, .add-btn{
     position: absolute;
     top: 0rem;
     left: 0rem;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1rem;
     padding: 0.5rem;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 50%;
@@ -90,41 +95,13 @@
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
   }
   
-  .cancel-btn:hover {
+  .cancel-btn:hover, .add-btn:hover {
     background-color: rgba(0, 0, 0, 0.8);
   }
-  
-  .cancel-btn.active {
-    color: #ff4757;
-  }
-
-  .add-btn {
-    position: absolute;
-    top: 0rem;
-    left: 0rem;
-    color: white;
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-  }
-  
-  .add-btn:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-  }
-  
-  .add-btn.active {
-    color: #ff4757;
-  }
-
 
   .rating-select {
     background-color: rgba(0, 0, 0, 0.7);
@@ -142,28 +119,21 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-
-    /*putting background color for testing*/
-
-    /* color:white;
-    padding:10x;
-    position:absolute;
-    z-index:2;
-    justify-content: center; */
   }
   
   .media-info h3 {
     font-size: 1rem;
     margin: 0;
     color: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
-    /* or */
-    color: #f0f0f0; /* A light grayish white */
     font-family: 'Roboto', sans-serif;
-}
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   
   .media-info p {
     color: #999;
     font-size: 0.9rem;
+    margin: 0;
   }
   
   .user-rating {
@@ -184,6 +154,6 @@
     .favorite-btn {
       width: 32px;
       height: 32px;
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
   }

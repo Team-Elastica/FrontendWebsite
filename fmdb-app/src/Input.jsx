@@ -4,7 +4,7 @@ import "./assets/css/Input.css";
 import {getPopularMedia} from "./services/api"
 
 function Input({addToCart, removeFromCart}) {
-    const NO_POPULAR_MOVIES_DISPLAYED = 19;
+    const NO_POPULAR_MOVIES_DISPLAYED = 10;
     const [searchQuery, setSearchQuery] = useState("")
     const [medias, setMedias] = useState([])
 

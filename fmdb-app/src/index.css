@@ -3,23 +3,24 @@
   padding: 10px;
   color: white;
   text-align: left;
-  text-size-adjust: 200%;
   width: 100%;
+  position: absolute;
   top: 0;
   left: 0;
-  position: absolute;
   display: flex;
   align-items: center;
   justify-content: left;
+  z-index: 1000; /* Ensure header stays on top */
+  height: 120px; /* Set a specific height */
 }
 
 .header .logo {
   height: 60px;
-  /* margin-right: 10px;  */
 }
 
 .header h1 {
   font-size: 2.5rem; 
+  margin-left: 20px; /* Add space between logo and text */
 }
 
 .header-button {
@@ -36,12 +37,11 @@
 /*Result*/
 
 .recommendation-section {
-  max-width: 800px;
-  margin: 100px auto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
   text-align: center;
-  position: absolute;
-  top: 1400px;  /* Moves it 50px downward */
 }
 
 .title {
@@ -52,6 +52,10 @@
 
 .category {
   margin-bottom: 30px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h3 {
@@ -62,11 +66,33 @@ h3 {
 
 .icon-row {
   display: flex;
-  justify-content: center;
-  gap: 50px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .icon {
   font-size: 50px;
   color: #333; /* Dark grey color */
+  transition: transform .2s;
 }
+
+.icon:hover {
+  transform: scale(1.2); /* Scale up the icon on hover */
+}
+
+
+/* General responsive adjustments */
+/* @media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .icon {
+    font-size: 2rem;
+  }
+} */

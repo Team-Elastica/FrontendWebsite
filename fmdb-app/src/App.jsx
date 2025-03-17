@@ -2,12 +2,9 @@ import { useState } from 'react'
 import './App.css'
 import Header from './Header';
 import Result from './Result';
-// import Card from './assets/components/MediaCard';
-
 import Input from './Input';
-import MediaCard from './assets/components/MediaCard';
 import Cart from './Cart';
-import Result from './Result';
+
 
 function App() {
   /*cart of movies user chooses*/
@@ -29,11 +26,13 @@ function App() {
   };
 
   return (
-    <div>
+    <div className = "app-container">
       <Header />
-      <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
-      <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
-      <Result />
+      <div className = "main-content">
+        <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
+        <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
+        <Result />
+      </div>
     </div>
   );
 }

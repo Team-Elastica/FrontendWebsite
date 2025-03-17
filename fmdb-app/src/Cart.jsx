@@ -6,7 +6,7 @@ function Cart({cart, addToCart, removeFromCart}) {
   return (
     <main className = "cart">   
       <div className="cart-title">Cart</div>
-      <div className="medias-grid">
+      <div className="cart-grid">
                 {cart.map(
                     (media) => 
                         <MediaCard key={media.id} media={media} addToCart={addToCart} removeFromCart={removeFromCart}/>

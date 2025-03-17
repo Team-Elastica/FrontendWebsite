@@ -1,16 +1,11 @@
 .cart {
     padding: 2rem 0;
     width: 100%;
-    height: auto;
     box-sizing: border-box;
     background-color: #FFFFFF;
-    position: absolute;
-    z-index: -1;
-    top: 800px;
-    left: 0px; 
-  }
+}
   
-  .cart-title {
+.cart-title {
     font-size: 2rem;                /* Larger font size */
     font-weight: bold;              /* Make the text bold */
     color: #333;                    /* Dark grey text color */
@@ -24,23 +19,34 @@
     border-radius: 5px;             /* Rounded corners */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
 }
+  
+/* Media grid for 10 cards per row */
+.cart-grid {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-  @media (max-width: 639px) {
-    .home {
-      padding: 1rem 0;
-    }
-  
-    .search-form {
-      margin-bottom: 1rem;
-    }
+/* For desktop screens - exactly 10 cards per row */
+@media (min-width: 1200px) {
+  .cart-grid {
+    grid-template-columns: repeat(10, 1fr);
   }
-  
-  .medias-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 0rem;
-    padding:0rem;
-    width: 100%;
-    box-sizing: border-box;
+}
+
+/* Empty cart message */
+.empty-cart {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .cart-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
+}
   
