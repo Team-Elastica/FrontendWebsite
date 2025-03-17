@@ -1,0 +1,46 @@
+.cart {
+    padding: 2rem 0;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    position: absolute;
+    z-index: -1;
+    top: 800px;
+    left: 0px; 
+  }
+  
+  .cart-title {
+    font-size: 2rem;                /* Larger font size */
+    font-weight: bold;              /* Make the text bold */
+    color: #333;                    /* Dark grey text color */
+    text-align: center;             /* Center the text */
+    margin: 20px 0;                 /* Add space above and below */
+    font-family: 'Arial', sans-serif; /* Set the font family */
+    text-transform: uppercase;      /* Make the text uppercase */
+    letter-spacing: 1px;            /* Add some spacing between letters */
+    background-color: #f4f4f4;      /* Light grey background */
+    padding: 10px 0;                /* Add padding above and below */
+    border-radius: 5px;             /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+
+  @media (max-width: 639px) {
+    .home {
+      padding: 1rem 0;
+    }
+  
+    .search-form {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .medias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0rem;
+    padding:0rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  

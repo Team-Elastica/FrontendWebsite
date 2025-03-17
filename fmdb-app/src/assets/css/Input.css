@@ -1,0 +1,87 @@
+.input {
+    padding: 2rem 0;
+    width: 100%;
+    /*height: auto;*/
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    z-index: -1;
+    position: absolute;
+    top: 79px;  /* Moves it 50px downward */
+    left: 0px; /* Moves it 20px to the left */
+  }
+  
+  .medias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+  .search-form {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    display: flex;
+    gap: 1rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    
+  }
+
+  .search-title {
+    font-size: 2rem;                /* Larger font size */
+    font-weight: bold;              /* Make the text bold */
+    color: #333;                    /* Dark grey text color */
+    text-align: center;             /* Center the text */
+    margin: 20px 0;                 /* Add space above and below */
+    font-family: 'Arial', sans-serif; /* Set the font family */
+    text-transform: uppercase;      /* Make the text uppercase */
+    letter-spacing: 1px;            /* Add some spacing between letters */
+    background-color: #f4f4f4;      /* Light grey background */
+    padding: 10px 0;                /* Add padding above and below */
+    border-radius: 5px;             /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+  
+  .search-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #666;
+  }
+  
+  .search-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #e50914;
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+  }
+  
+  .search-button:hover {
+    background-color: #f40612;
+  }
+  
+  
+  @media (max-width: 10000px) {
+    .home {
+      padding: 1rem 0;
+    }
+  
+    .search-form {
+      margin-bottom: 1rem;
+    }
+  }
+
+  
