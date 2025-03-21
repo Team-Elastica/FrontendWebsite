@@ -11,7 +11,8 @@ function Cart({cart, addToCart, removeFromCart}) {
                     (media) => 
                         <MediaCard key={media.id} media={media} addToCart={addToCart} removeFromCart={removeFromCart}/>
                 )}
-        </div>
+      </div>
+      <button className="generate-button">Generate</button>
     </main>
   );
 }
