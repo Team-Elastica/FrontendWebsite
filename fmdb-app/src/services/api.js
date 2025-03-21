@@ -244,13 +244,15 @@ export async function get_recommendations(medias){
         /*
         * TO DO: implement recommendation logic. Rn, I'm just using popular API as dummy data
         */
-        summaries = []
-        for (index in medias) {
+        let summaries = []
+        for (let index in medias) {
             summaries.push(medias[index].summary)
+            summaries.push(medias[index].title)
         }
 
         const queryParams = `items=${encodeURIComponent(JSON.stringify(summaries))}`;
         try {
+            console.log('start')
             const response = await fetch(`http://localhost:5000/semanticSearch?${queryParams}`);
             const result = await response.json();
             console.log(result);
