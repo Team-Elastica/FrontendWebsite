@@ -81,6 +81,14 @@ h3 {
   transform: scale(1.2); /* Scale up the icon on hover */
 }
 
+.media-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Creates 5 equal columns */
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 /* General responsive adjustments */
 /* @media (max-width: 768px) {
