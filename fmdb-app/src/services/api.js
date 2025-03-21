@@ -244,6 +244,20 @@ export async function get_recommendations(medias){
         /*
         * TO DO: implement recommendation logic. Rn, I'm just using popular API as dummy data
         */
+        summaries = []
+        for (index in medias) {
+            summaries.push(medias[index].summary)
+        }
+
+        const queryParams = `items=${encodeURIComponent(JSON.stringify(summaries))}`;
+        try {
+            const response = await fetch(`http://localhost:5000/semanticSearch?${queryParams}`);
+            const result = await response.json();
+            console.log(result);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+
         let movie_matches = await getPopularMovies(); //TO DO: Replace with actual logic
         movie_matches = wrapData(movie_matches, "Fixed"); //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
                                                         //READ COMMENT ON wrapData function for detailed data structure info
