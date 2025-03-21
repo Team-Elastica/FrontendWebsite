@@ -10,6 +10,9 @@ const TMDB_IMAGE_PATH = "https://image.tmdb.org/t/p/w500";
 
 let latest_id = 0
 
+/*
+ API CALL FUNCTIONS
+*/
 export const getGameAuth = async () => {
     const params = new URLSearchParams({
         client_id: IGDB_CLIENT_ID,
@@ -101,20 +104,54 @@ function shuffleArray(array) {
     return array;
 }
 
+
+/*
+    Input:
+        data: array of data elements. Each data element is from either the TMDB or IGDB datasets. 
+              An example of what we expect for the variable data is list:
+            [
+                {
+                    id:..
+                    title:...
+                    first_release_date:...
+                    etc...
+            
+                },
+
+                {
+                    id:..
+                    title:...
+                    first_release_date:...
+                    etc...
+                },
+
+                etc...
+            ]
+        type: type of media, either these strings {"Movie", "Show", "Game", "Fixed"}
+    Output:
+        array of original data wrapped with these consistent columns: [id, title, url, release_date, summary, genres, type, hasAddButton]
+*/
 function wrapData(data, type) {
-    //console.log('Data received:', data); // Check the structure
     if (!Array.isArray(data)) {
         throw new Error(`Expected array, but got ${typeof data}`);
     }
     
+    if (type === "Fixed") {
+        return data;
+    }
+
     return data.map(item => {
-        return {
+        return {                                                  
             id: latest_id++, // Ensure unique IDs
             title: type === "Game" ? item.name : item.title || item.name,
             url: type === "Game" 
                 ? item.cover?.url || "fallback_url.jpg" // Fallback URL if cover.url is missing
                 : item.poster_path || "fallback_url.jpg", // Fallback for posters
             release_date: type === "Game" ? dateToYear(item.first_release_date) : dateToYear(item.release_date) || dateToYear(item.first_air_date),
+            summary: type === "Game" ? item.summary : item.overview, // Assign summary based on type
+            genres: type === "Game" 
+                ? (Array.isArray(item.Genres) ? item.Genres : []) // Ensure it's an array
+                : (typeof item.genres === "string" ? item.genres.split(", ") : []), // Split by ", " for Movies/Shows
             type: type,
             hasAddButton: true
         };
@@ -124,3 +161,110 @@ function wrapData(data, type) {
 function dateToYear(date) {
     return new Date(date).getFullYear();
 }
+
+
+/*
+ ELASTICSEARCH CALL FUNCTIONS
+*/
+
+/*
+    TO DO...
+    Input:
+        keystroke: keystroke input from the user in the search bar
+    Output:
+        matches: list of closest media matches. The list has length=MAX_MATCHES
+*/
+export async function get_closest_keystroke_match(keystroke) {
+    //Max number of matches to return
+    let MAX_MATCHES = 9;
+    let MAX_PER_TYPE = MAX_MATCHES / 3;
+
+    //TO DO: populate matches based on your autocomplete logic. Right now, I'm just filling it with dummy data.
+    let matches = [];
+
+    //if search bar is empty, just default to most popular media API
+    if(keystroke === ""){
+        matches = await getPopularMedia();
+
+      //if search bar is populated, do keystroke search
+    } else {
+        /*TO DO: EDIT THIS WITH ACTUAL AUTOCOMPLETE SEARCH LOGIC. 
+            -Right now, I'm just supplying dummy data from popular API calls
+            -I am getting a separate list of data for each type (movie, game, show), then splitting them equally to fit in matches. 
+            -TO DO:Up to your discretion to give importance to which media is a closest match. Movies, Games, or Shows might have different ratio
+                in matches depending on the keystroke
+        */
+        let movie_matches = await getPopularMovies(); //TO DO: Replace with actual logic
+        movie_matches = wrapData(movie_matches, "Fixed"); //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
+                                                        //READ COMMENT ON wrapData function for detailed data structure info
+        movie_matches = movie_matches.slice(0, MAX_PER_TYPE + 1); //IMPORTANT: Limit how many media matches for each type of media
+
+        let show_matches = await getPopularShows(); 
+        show_matches = wrapData(show_matches, "Fixed");
+        show_matches = show_matches.slice(0, MAX_PER_TYPE + 1);
+
+        let game_matches = []; //doing empty cause getPopularGames doesn't work yet
+        game_matches = wrapData(game_matches, "Fixed");
+        game_matches = game_matches.slice(0, MAX_PER_TYPE + 1);
+
+        //combine all the media_matches into matches [KEEP]
+        matches = movie_matches.concat(show_matches, game_matches)
+
+        //restrict the matches for only up to MAX_MATCHES [KEEP]
+        matches = matches.slice(0, MAX_MATCHES + 1);
+
+        //shuffles the matches list [KEEP MAYBE]
+        matches = shuffleArray(matches)
+    }
+
+    //return closest matches
+    return matches
+}
+
+
+/*
+    TO DO...
+    Input:
+        medias: list of medias to get recommendations from.
+    Output:
+        matches_dict: {movies: [list of movies recommended], games: [list of games recommended], shows: [list of shows recommended]}
+*/
+export async function get_recommendations(medias){
+    //Max number of matches to return
+    let MAX_PER_TYPE = 5;
+
+    //TO DO: populate matches_dict based on your recommendation logic. Right now, I'm just filling it with dummy data.
+    let matches_dict = {movies: [], games: [], shows: []};
+
+    //if empty, just return empty dict
+    if(medias.length === 0) {
+        matches_dict = matches_dict
+        //do recommendation logic if dict is not empty
+    } else {
+        /*
+        * TO DO: implement recommendation logic. Rn, I'm just using popular API as dummy data
+        */
+        let movie_matches = await getPopularMovies(); //TO DO: Replace with actual logic
+        movie_matches = wrapData(movie_matches, "Fixed"); //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
+                                                        //READ COMMENT ON wrapData function for detailed data structure info
+        movie_matches = movie_matches.slice(0, MAX_PER_TYPE + 1); //IMPORTANT: Limit how many media matches for each type of media
+
+        let show_matches = await getPopularShows(); 
+        show_matches = wrapData(show_matches, "Fixed");
+        show_matches = show_matches.slice(0, MAX_PER_TYPE + 1);
+
+        let game_matches = []; //doing empty cause getPopularGames doesn't work yet
+        game_matches = wrapData(game_matches, "Fixed");
+        game_matches = game_matches.slice(0, MAX_PER_TYPE + 1);
+
+        //assign the dictionary values accordingly before returning [KEEP]
+        matches_dict.movies = movie_matches;
+        matches_dict.games = game_matches;
+        matches_dict.shows = show_matches;
+
+    }
+
+    //return closest matches
+    return matches_dict
+}
+

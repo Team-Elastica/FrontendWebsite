@@ -1,12 +1,14 @@
 import MediaCard from "./assets/components/MediaCard";
 import {useState, useEffect} from 'react';
 import "./assets/css/Input.css";
-import {getPopularMedia} from "./services/api"
+import {getPopularMedia, get_closest_keystroke_match, get_recommendations} from "./services/api"
 
 function Input({addToCart, removeFromCart}) {
     const NO_POPULAR_MOVIES_DISPLAYED = 10;
-    const [searchQuery, setSearchQuery] = useState("")
-    const [medias, setMedias] = useState([])
+    const [searchQuery, setSearchQuery] = useState("");
+    const [medias, setMedias] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const loadPopularMedia = async() => {
@@ -26,6 +28,31 @@ function Input({addToCart, removeFromCart}) {
     loadPopularMedia()
     }, [])
 
+    // This effect runs whenever searchQuery changes
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            try {
+                setLoading(true);
+                const searchResults = await get_closest_keystroke_match(searchQuery);
+                setMedias(searchResults);
+                console.log("Search results:", searchResults);
+            } catch (error) {
+                console.error("Failed to search media", error);
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // Add a small delay to prevent too many API calls while typing
+        const debounceTimer = setTimeout(() => {
+            fetchSearchResults();
+        }, 300);
+
+        // Clean up the timer
+        return () => clearTimeout(debounceTimer);
+    }, [searchQuery]);
+
     // const [medias, setMedias] = useState([
     //     { id: 1, title: "Inception", type : "Movie", release_date: 2010, hasAddButton: true  },
     //     { id: 2, title: "Django Unchained", type : "Movie", release_date: 2010, hasAddButton: true  },
@@ -36,8 +63,11 @@ function Input({addToCart, removeFromCart}) {
 
     const handleSearch = (e) => {
         e.preventDefault()
-        alert(searchQuery)
-        setSearchQuery("------")
+        //alert(searchQuery)
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
     };
 
     return <main className = "input">
@@ -49,17 +79,23 @@ function Input({addToCart, removeFromCart}) {
                     placeholder="search for media..." 
                     className = "search-input"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={handleSearchChange}
                 />
             </form>
 
+            {loading && <div className="loading">Loading...</div>}
+            {error && <div className="error">Error: {error.message}</div>}
+
             <div className="medias-grid">
-                {/*only show first 10 */}
                 {medias
-                    .filter(media => media.title.toLowerCase().startsWith(searchQuery.toLowerCase()))
-                    .slice(0, NO_POPULAR_MOVIES_DISPLAYED) // Limit to the first 10 items
+                    .slice(0, NO_POPULAR_MOVIES_DISPLAYED)
                     .map((media) => 
-                        <MediaCard key={media.id} media={media} addToCart={addToCart} removeFromCart={removeFromCart} />
+                        <MediaCard 
+                            key={media.id} 
+                            media={media} 
+                            addToCart={addToCart} 
+                            removeFromCart={removeFromCart} 
+                        />
                     )}
             </div>
         </main>
