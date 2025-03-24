@@ -22,3 +22,18 @@ body,html{
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
+.recommend-button {
+  background-color: #282c34;
+  border: none;
+  color: white;
+  padding: 20px 50px;
+  font-size: 30px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: block;
+  margin: 20px auto;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  text-align: center;
+}

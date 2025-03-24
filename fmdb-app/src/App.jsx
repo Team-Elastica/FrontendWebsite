@@ -50,7 +50,7 @@ function App() {
             className="recommend-button" 
             onClick={handleRecommend}
             disabled={cart.length === 0}
-          >
+        >
             Recommend
         </button>
         <Result recommendations = {recommendations} addToCart={addToCart} removeFromCart={removeFromCart}/>
