@@ -68,7 +68,7 @@ def formatMedia(mediaData, type):
             "id": idNum,
             "title": media['Title'],
             "url": media['URL'] if media['URL'] != 'EMPTY_URL' else 'fallback_url.jpg',
-            "release_date": date_to_year(media['Release Date']) if media['Release Date'] != 'EMPTY_RELEASE_DATE' else '9999-01-01',
+            "release_date": date_to_year(media['Release Date']) if media['Release Date'] != 'EMPTY_RELEASE_DATE' and media['Release Date'] != 'TBD'  else '9999-01-01',
             "summary": media['Summary'],
             "genres": media['Genres'].split(", ") if media['Genres'] != "EMPTY_GENRES" else [],
             "type": type,
@@ -94,7 +94,7 @@ def date_to_year(date):
         except ValueError:
             continue
 
-    raise ValueError("Date format not recognized")
+    raise ValueError("Date format not recognized: " + date)
 
 if __name__ == "__main__":
     app.run(debug=True) 
