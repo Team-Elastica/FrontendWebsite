@@ -2,8 +2,8 @@ from flask import Flask, request, json
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 from elasticsearch import Elasticsearch
-import pandas as pd
 import numpy as np
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -28,8 +28,7 @@ def semanticSearch():
     inputQuery=[]
 
     for item in items:
-        if item != "":
-            inputQuery.append(model.encode(item))
+        inputQuery.append(model.encode(item))
 
     # average = pd.DataFrame(inputQuery).mean().tolist()
     average = np.mean(inputQuery, axis=0).tolist()
@@ -55,9 +54,45 @@ def semanticSearch():
     tv_shows = [hit['_source'] for hit in tvShowResponse['hits']['hits']]
     games = [hit['_source'] for hit in gameResponse['hits']['hits']]
 
-    print(movies)
+    movies = formatMovie(movies, "Movies")
 
     return {"movies": movies, "tv_shows": tv_shows, "games": games}
+
+def formatMovie(mediaData, type):
+    medias = []
+    idNum = 0
+    for media in mediaData:
+        data = {
+            "id": idNum,
+            "title": media['Title'],
+            "url": media['URL'] if media['URL'] != 'EMPTY_URL' else 'fallback_url.jpg',
+            "release_date": date_to_year(media['Release Date']) if media['Release Date'] != 'EMPTY_RELEASE_DATE' else '9999-01-01',
+            "summary": media['Summary'],
+            "genres": media['Genres'].split(", ") if media['Genres'] != "EMPTY_GENRES" else [],
+            "type": type,
+            "hasAddButton": True
+
+        }
+
+        medias.append(data)
+
+        idNum += 1
+    
+    return medias
+
+def date_to_year(date):
+    formats = [
+        "%Y-%m-%d",       # 2025-03-23
+        "%b %d, %Y"       # Oct 12, 2022
+    ]
+
+    for format in formats:
+        try:
+            return datetime.strptime(date, format).year
+        except ValueError:
+            continue
+
+    raise ValueError("Date format not recognized")
 
 if __name__ == "__main__":
     app.run(debug=True) 
