@@ -54,11 +54,13 @@ def semanticSearch():
     tv_shows = [hit['_source'] for hit in tvShowResponse['hits']['hits']]
     games = [hit['_source'] for hit in gameResponse['hits']['hits']]
 
-    movies = formatMovie(movies, "Movies")
+    movies = formatMedia(movies, "Movies")
+    tv_shows = formatMedia(tv_shows, "Show")
+    games = formatMedia(games, "Game")
 
     return {"movies": movies, "tv_shows": tv_shows, "games": games}
 
-def formatMovie(mediaData, type):
+def formatMedia(mediaData, type):
     medias = []
     idNum = 0
     for media in mediaData:
