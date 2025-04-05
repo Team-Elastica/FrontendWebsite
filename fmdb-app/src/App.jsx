@@ -1,9 +1,12 @@
 import { useState } from 'react'
+
 import './App.css'
 import Header from './Header';
 import Result from './Result';
 import Input from './Input';
 import Cart from './Cart';
+import Login from './Login'; 
+import Signup from './signUp';
 import {getPopularMedia, get_closest_keystroke_match, get_recommendations} from "./services/api"
 
 
