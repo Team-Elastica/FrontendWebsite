@@ -11,7 +11,7 @@ function Cart({cart, addToCart, removeFromCart}) {
                     (media) => 
                         <MediaCard key={media.id} media={media} addToCart={addToCart} removeFromCart={removeFromCart}/>
                 )}
-        </div>
+      </div>
     </main>
   );
 }
