@@ -25,10 +25,10 @@ def semanticSearch():
     except json.JSONDecodeError:
         return {"error": "Invalid input format. Expected JSON array."}, 400
 
-    inputQuery=[]
+    inputQuery = model.encode(items, normalize_embeddings=True)
 
-    for item in items:
-        inputQuery.append(model.encode(item))
+    # for item in items:
+    #     inputQuery.append(model.encode(item))
 
     # average = pd.DataFrame(inputQuery).mean().tolist()
     average = np.mean(inputQuery, axis=0).tolist()
@@ -46,45 +46,84 @@ def semanticSearch():
     #     }
     # }
 
-    query = {
-            "bool": {
-                "filter": {
-                    "term": {
-                        "Adult": False
-                    }
-                },
-                "must": {
-                    "script_score": {
-                        "query": {
-                            "match_all": {}
-                        },
-                        "script": {
-                            "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
-                            "params": {
-                                "query_vector": average
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    # query = {
+    #         "bool": {
+    #             "filter": {
+    #                 "term": {
+    #                     "Adult": False
+    #                 }
+    #             },
+    #             "must": {
+    #                 "script_score": {
+    #                     "query": {
+    #                         "match_all": {}
+    #                     },
+    #                     "script": {
+    #                         "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+    #                         "params": {
+    #                             "query_vector": average
+    #                         }
+    #                     }
+    #                 }
+    #             }
+    #         }
+    #     }
 
 
-    game_query = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
-                "params": {
-                    "query_vector": average
-                }
-            }
+    # game_query = {
+    #     "script_score": {
+    #         "query": {"match_all": {}},
+    #         "script": {
+    #             "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+    #             "params": {
+    #                 "query_vector": average
+    #             }
+    #         }
+    #     }
+    # }
+
+    knn_query_base = {
+        "field": "embedding",
+        "query_vector": average,
+        "k": 20,
+        "num_candidates": 70
+    }
+
+    movie_tv_knn_query = {
+        "knn": {
+            **knn_query_base,
+            "filter": { "term": { "Adult": False } }
         }
     }
 
-    movieResponse = client.search(size=5, source_excludes='embedding', index='semantic_movie', query=query)
-    tvShowResponse = client.search(size=5, source_excludes='embedding', index='semantic_tv', query=query)
-    gameResponse = client.search(size=5, source_excludes='embedding' ,index='semantic_game', query=game_query)
+    game_knn_query = { "knn": knn_query_base }
+
+    search_tasks = [
+            client.search(
+                index='semantic_movie',
+                knn=movie_tv_knn_query["knn"],
+                size=5,
+                source_excludes='embedding'
+            ),
+            client.search(
+                index='semantic_tv',
+                knn=movie_tv_knn_query["knn"],
+                size=5,
+                source_excludes='embedding'
+            ),
+            client.search(
+                index='semantic_game',
+                knn=game_knn_query["knn"],
+                size=5,
+                source_excludes='embedding'
+            )
+        ]
+    
+    movieResponse, tvShowResponse, gameResponse = search_tasks
+
+    # movieResponse = client.search(size=5, source_excludes='embedding', index='semantic_movie', query=query)
+    # tvShowResponse = client.search(size=5, source_excludes='embedding', index='semantic_tv', query=query)
+    # gameResponse = client.search(size=5, source_excludes='embedding' ,index='semantic_game', query=game_query)
 
     movies = [hit['_source'] for hit in movieResponse['hits']['hits']]
     tv_shows = [hit['_source'] for hit in tvShowResponse['hits']['hits']]
@@ -109,7 +148,6 @@ def formatMedia(mediaData, type):
             "genres": media['Genres'].split(", ") if media['Genres'] != "EMPTY_GENRES" else [],
             "type": type,
             "hasAddButton": True
-
         }
 
         medias.append(data)
