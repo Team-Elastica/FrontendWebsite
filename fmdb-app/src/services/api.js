@@ -194,6 +194,32 @@ export async function get_closest_keystroke_match(keystroke) {
             -TO DO:Up to your discretion to give importance to which media is a closest match. Movies, Games, or Shows might have different ratio
                 in matches depending on the keystroke
         */
+        try {
+            const response = await fetch(`http://localhost:5050/search?query=${encodeURIComponent(keystroke)}&mpt=${encodeURIComponent(MAX_PER_TYPE)}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+    
+            const data = await response.json();
+            console.log("Search Results:", data.results[0]);
+            let matches = [];
+            for (let i = 0; i < data.results.length; i++) {
+                const wrappedItem = wrapData([data.results[i]], data.results[i].type); // Wrap a single item as an array
+                console.log("Wrapped Item:", wrappedItem);
+                matches = matches.concat(wrappedItem); // Append the wrapped item to the results array
+            }
+            return matches;
+        } catch (error) {
+            console.error("Failed to fetch search results:", error);
+            return [];
+        }
         let movie_matches = await getPopularMovies(); //TO DO: Replace with actual logic
         movie_matches = wrapData(movie_matches, "Fixed"); //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
                                                         //READ COMMENT ON wrapData function for detailed data structure info
