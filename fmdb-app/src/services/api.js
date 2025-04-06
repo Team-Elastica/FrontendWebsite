@@ -259,7 +259,6 @@ export async function get_recommendations(medias){
     //Max number of matches to return
     let MAX_PER_TYPE = 5;
 
-    //TO DO: populate matches_dict based on your recommendation logic. Right now, I'm just filling it with dummy data.
     let matches_dict = {movies: [], games: [], shows: []};
 
     //if empty, just return empty dict
@@ -286,17 +285,11 @@ export async function get_recommendations(medias){
             console.error("Error fetching data:", error);
           }
 
-        let movie_matches = result.movies ; //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
-                                                        //READ COMMENT ON wrapData function for detailed data structure info
-        // console.info("Movie Matches: " + movie_matches)
-        // movie_matches = movie_matches.slice(0, MAX_PER_TYPE + 1); //IMPORTANT: Limit how many media matches for each type of media
+        let movie_matches = result.movies ;
 
         let show_matches = result.tv_shows; 
-        // show_matches = show_matches.slice(0, MAX_PER_TYPE + 1);
-        // console.error(show_matches)
 
-        let game_matches = result.games; //doing empty cause getPopularGames doesn't work yet
-        // game_matches = game_matches.slice(0, MAX_PER_TYPE + 1);
+        let game_matches = result.games; 
 
         //assign the dictionary values accordingly before returning [KEEP]
         matches_dict.movies = movie_matches;
