@@ -34,7 +34,43 @@ def semanticSearch():
     average = np.mean(inputQuery, axis=0).tolist()
 
     # https://medium.com/@bairagiabhishek03/elasticsearch-as-a-vector-store-es-tutorial-5-816f9451ddc1
+    # query = {
+    #     "script_score": {
+    #         "query": {"match_all": {}},
+    #         "script": {
+    #             "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+    #             "params": {
+    #                 "query_vector": average
+    #             }
+    #         }
+    #     }
+    # }
+
     query = {
+            "bool": {
+                "filter": {
+                    "term": {
+                        "Adult": False
+                    }
+                },
+                "must": {
+                    "script_score": {
+                        "query": {
+                            "match_all": {}
+                        },
+                        "script": {
+                            "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+                            "params": {
+                                "query_vector": average
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    game_query = {
         "script_score": {
             "query": {"match_all": {}},
             "script": {
@@ -48,7 +84,7 @@ def semanticSearch():
 
     movieResponse = client.search(size=5, source_excludes='embedding', index='semantic_movie', query=query)
     tvShowResponse = client.search(size=5, source_excludes='embedding', index='semantic_tv', query=query)
-    gameResponse = client.search(size=5, source_excludes='embedding' ,index='semantic_game', query=query)
+    gameResponse = client.search(size=5, source_excludes='embedding' ,index='semantic_game', query=game_query)
 
     movies = [hit['_source'] for hit in movieResponse['hits']['hits']]
     tv_shows = [hit['_source'] for hit in tvShowResponse['hits']['hits']]
