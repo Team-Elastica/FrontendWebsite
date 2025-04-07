@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 
 import './App.css'
 import Header from './Header';
@@ -42,23 +44,28 @@ function App() {
     setRecommendations(await get_recommendations(cart));
   };
 
-
   return (
-    <div className = "app-container">
+    <Router>
       <Header />
-      <div className = "main-content">
-        <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
-        <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
-        <button 
-            className="recommend-button" 
-            onClick={handleRecommend}
-            disabled={cart.length === 0}
-        >
-            Recommend
-        </button>
-        <Result recommendations = {recommendations} addToCart={addToCart} removeFromCart={removeFromCart}/>
-      </div>
-    </div>
+      <Routes>
+        <Route path="/" element={
+          <div className="main-content">
+            <Input addToCart={addToCart} removeFromCart={removeFromCart} />
+            <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} />
+            <button
+              className="recommend-button"
+              onClick={handleRecommend}
+              disabled={cart.length === 0}
+            >
+              Recommend
+            </button>
+            <Result recommendations={recommendations} addToCart={addToCart} removeFromCart={removeFromCart} />
+          </div>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </Router>
   );
 }
 

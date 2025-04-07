@@ -37,3 +37,41 @@ body,html{
   margin-bottom: 20px;
   text-align: center;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #1a1a1a; /* or whatever your header bg is */
+  color: white;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-button {
+  padding: 8px 16px;
+  background-color: #ff5c5c;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-email {
+  font-weight: bold;
+}
