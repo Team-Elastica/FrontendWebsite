@@ -130,7 +130,7 @@ function shuffleArray(array) {
         type: type of media, either these strings {"Movie", "Show", "Game", "Fixed"}
     Output:
         array of original data wrapped with these consistent columns: [id, title, url, release_date, summary, genres, type, hasAddButton]
-*/
+*/  
 function wrapData(data, type) {
     if (!Array.isArray(data)) {
         throw new Error(`Expected array, but got ${typeof data}`);
@@ -194,6 +194,32 @@ export async function get_closest_keystroke_match(keystroke) {
             -TO DO:Up to your discretion to give importance to which media is a closest match. Movies, Games, or Shows might have different ratio
                 in matches depending on the keystroke
         */
+        try {
+            const response = await fetch(`http://localhost:5050/search?query=${encodeURIComponent(keystroke)}&mpt=${encodeURIComponent(MAX_PER_TYPE)}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+    
+            const data = await response.json();
+            console.log("Search Results:", data.results[0]);
+            let matches = [];
+            for (let i = 0; i < data.results.length; i++) {
+                const wrappedItem = wrapData([data.results[i]], data.results[i].type); // Wrap a single item as an array
+                console.log("Wrapped Item:", wrappedItem);
+                matches = matches.concat(wrappedItem); // Append the wrapped item to the results array
+            }
+            return matches;
+        } catch (error) {
+            console.error("Failed to fetch search results:", error);
+            return [];
+        }
         let movie_matches = await getPopularMovies(); //TO DO: Replace with actual logic
         movie_matches = wrapData(movie_matches, "Fixed"); //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
                                                         //READ COMMENT ON wrapData function for detailed data structure info
@@ -233,7 +259,6 @@ export async function get_recommendations(medias){
     //Max number of matches to return
     let MAX_PER_TYPE = 5;
 
-    //TO DO: populate matches_dict based on your recommendation logic. Right now, I'm just filling it with dummy data.
     let matches_dict = {movies: [], games: [], shows: []};
 
     //if empty, just return empty dict
@@ -244,18 +269,27 @@ export async function get_recommendations(medias){
         /*
         * TO DO: implement recommendation logic. Rn, I'm just using popular API as dummy data
         */
-        let movie_matches = await getPopularMovies(); //TO DO: Replace with actual logic
-        movie_matches = wrapData(movie_matches, "Fixed"); //IMPORTANT: call wrapData on your data list. Replace "Fixed" with {"Game", "Show", or "Movie"}
-                                                        //READ COMMENT ON wrapData function for detailed data structure info
-        movie_matches = movie_matches.slice(0, MAX_PER_TYPE + 1); //IMPORTANT: Limit how many media matches for each type of media
+        let summaries = []
+        for (let index in medias) {
+            summaries.push(medias[index].summary)
+            summaries.push(medias[index].title)
+        }
 
-        let show_matches = await getPopularShows(); 
-        show_matches = wrapData(show_matches, "Fixed");
-        show_matches = show_matches.slice(0, MAX_PER_TYPE + 1);
+        const queryParams = `items=${encodeURIComponent(JSON.stringify(summaries))}`;
+        let result = null
+        try {
+            console.log('start')
+            const response = await fetch(`http://localhost:5000/semanticSearch?${queryParams}`);
+            result = await response.json();
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
 
-        let game_matches = []; //doing empty cause getPopularGames doesn't work yet
-        game_matches = wrapData(game_matches, "Fixed");
-        game_matches = game_matches.slice(0, MAX_PER_TYPE + 1);
+        let movie_matches = result.movies ;
+
+        let show_matches = result.tv_shows; 
+
+        let game_matches = result.games; 
 
         //assign the dictionary values accordingly before returning [KEEP]
         matches_dict.movies = movie_matches;

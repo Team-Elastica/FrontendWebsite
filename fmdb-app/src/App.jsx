@@ -1,9 +1,14 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+
 import './App.css'
 import Header from './Header';
 import Result from './Result';
 import Input from './Input';
 import Cart from './Cart';
+import Login from './Login'; 
+import Signup from './signUp';
 import Hero from './Hero';
 import {getPopularMedia, get_closest_keystroke_match, get_recommendations} from "./services/api"
 
@@ -40,25 +45,30 @@ function App() {
     setRecommendations(await get_recommendations(cart));
   };
 
-
   return (
-    <div className = "app-container">
+    <Router>
       <Header />
-      
-      <div className = "main-content">
-        <Hero />
-        <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
-        <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
-        <button 
-            className="recommend-button" 
-            onClick={handleRecommend}
-            disabled={cart.length === 0}
-        >
-            Recommend
-        </button>
-        <Result recommendations = {recommendations} addToCart={addToCart} removeFromCart={removeFromCart}/>
-      </div>
-    </div>
+      <Routes>
+        <Route path="/" element={
+          
+      <div className="main-content">
+            <Hero />
+        <Input addToCart={addToCart} removeFromCart={removeFromCart} />
+            <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} />
+            <button
+              className="recommend-button"
+              onClick={handleRecommend}
+              disabled={cart.length === 0}
+            >
+              Recommend
+            </button>
+            <Result recommendations={recommendations} addToCart={addToCart} removeFromCart={removeFromCart} />
+          </div>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </Router>
   );
 }
 
