@@ -5,15 +5,6 @@
   background-color: #FFFFFF;
 }
 
-/* .medias-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-} */
-
 /* Media grid for 10 cards per row */
 .medias-grid {
   display: grid;
@@ -62,6 +53,7 @@
   background-color: #333;
   color: white;
   font-size: 1rem;
+  margin-top: -30px;
 }
   
 .search-input:focus {

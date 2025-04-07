@@ -72,11 +72,11 @@ function Input({addToCart, removeFromCart}) {
 
     return <main className = "input">
 
-            <div className = "search-title">Search for media</div>
+            {/* <div className = "search-title">Search for media</div> */}
             <form onSubmit={handleSearch} className="search-form">
                 <input 
                     type="text" 
-                    placeholder="search for media..." 
+                    placeholder="Search for media..." 
                     className = "search-input"
                     value={searchQuery}
                     onChange={handleSearchChange}

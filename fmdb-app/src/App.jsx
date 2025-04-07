@@ -4,6 +4,7 @@ import Header from './Header';
 import Result from './Result';
 import Input from './Input';
 import Cart from './Cart';
+import Hero from './Hero';
 import {getPopularMedia, get_closest_keystroke_match, get_recommendations} from "./services/api"
 
 
@@ -43,7 +44,9 @@ function App() {
   return (
     <div className = "app-container">
       <Header />
+      
       <div className = "main-content">
+        <Hero />
         <Input addToCart={addToCart} removeFromCart={removeFromCart}/>
         <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
         <button 
