@@ -158,6 +158,33 @@ function wrapData(data, type) {
     });
 }
 
+function wrapData2(data, type) {
+    if (!Array.isArray(data)) {
+        throw new Error(`Expected array, but got ${typeof data}`);
+    }
+    
+    if (type === "Fixed") {
+        return data;
+    }
+
+    return data.map(item => {
+        return {                                                  
+            id: latest_id++, // Ensure unique IDs
+            title: type === "Game" ? item.title : item.title || item.name,
+            url: type === "Game" 
+                ? item.poster_path || "fallback_url.jpg" // Fallback URL if cover.url is missing
+                : item.poster_path || "fallback_url.jpg", // Fallback for posters
+            release_date: type === "Game" ? dateToYear(item.release_date) : dateToYear(item.release_date) || dateToYear(item.first_air_date),
+            summary: type === "Game" ? item.summary : item.summary, // Assign summary based on type
+            genres: type === "Game" 
+                ? (Array.isArray(item.genres) ? item.genres : []) // Ensure it's an array
+                : (typeof item.genres === "string" ? item.genres.split(", ") : []), // Split by ", " for Movies/Shows
+            type: type,
+            hasAddButton: true
+        };
+    });
+}
+
 function dateToYear(date) {
     return new Date(date).getFullYear();
 }
@@ -211,7 +238,7 @@ export async function get_closest_keystroke_match(keystroke) {
             console.log("Search Results:", data.results[0]);
             let matches = [];
             for (let i = 0; i < data.results.length; i++) {
-                const wrappedItem = wrapData([data.results[i]], data.results[i].type); // Wrap a single item as an array
+                const wrappedItem = wrapData2([data.results[i]], data.results[i].type); // Wrap a single item as an array
                 console.log("Wrapped Item:", wrappedItem);
                 matches = matches.concat(wrappedItem); // Append the wrapped item to the results array
             }
