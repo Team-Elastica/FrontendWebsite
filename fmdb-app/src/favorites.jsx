@@ -1,0 +1,29 @@
+import React from 'react';
+import MediaCard from "./assets/components/MediaCard";
+
+
+function FavoritesPage({ favorites, toggleFavorite, addToCart, removeFromCart }) {
+  return (
+    <div className="favorites-page" style={{ padding: '40px', paddingTop: '120px' }}>
+      <h2>Your Favorites</h2>
+      {favorites.length === 0 ? (
+        <p>You haven't added any favorites yet.</p>
+      ) : (
+        <div className="favorites-grid">
+          {favorites.map((media) => (
+            <MediaCard
+              key={media.id}
+              media={media}
+              addToCart={addToCart}
+              removeFromCart={removeFromCart}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default FavoritesPage;

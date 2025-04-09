@@ -1,10 +1,9 @@
 import "../css/MediaCard.css";
 
 //media.url, media.title, media.type, media.release_date, media.hasAddButton
-function MediaCard({media, addToCart, removeFromCart}) {
-
+function MediaCard({ media, addToCart, removeFromCart, favorites, toggleFavorite }) {
     function onFavouriteClick() {
-        alert("clicked on favourite button");
+        toggleFavorite(media);
     }
 
     function onCancelClick() {
@@ -16,14 +15,15 @@ function MediaCard({media, addToCart, removeFromCart}) {
         addToCart(media);
         //alert("clicked on add button");
     }
+    const isFavorited = favorites?.some(item => item.id === media.id);
 
     return <div className="media-card">
         <div className = "media-poster">
             <img src={`https://image.tmdb.org/t/p/w500${media.url}`} alt={media.title}></img>
         </div>
         <div className="media-overlay">
-            <button className="favourite-btn" onClick={onFavouriteClick}>
-                ❤️
+            <button className="favourite-btn" onClick={onFavouriteClick}> 
+                {isFavorited ? '💖' : '🤍'}
             </button>
 
             {/* renders EITHER add or cancel button */}
