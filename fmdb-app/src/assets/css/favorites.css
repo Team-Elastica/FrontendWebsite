@@ -1,0 +1,20 @@
+.favorites-page {
+  padding: 2rem 0;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #FFFFFF;
+}
+
+@media (min-width: 1200px) {
+  .favorites-grid {
+    grid-template-columns: repeat(10, 1fr);
+  }
+}
+
+.favorites-grid {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}

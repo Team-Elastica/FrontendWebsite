@@ -1,5 +1,7 @@
 import React from 'react';
 import MediaCard from "./assets/components/MediaCard";
+import "./assets/css/favorites.css";
+
 
 
 function FavoritesPage({ favorites, toggleFavorite, addToCart, removeFromCart }) {
