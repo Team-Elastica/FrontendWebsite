@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react';
 import "./assets/css/Input.css";
 import {getPopularMedia, get_closest_keystroke_match, get_recommendations} from "./services/api"
 
-function Input({addToCart, removeFromCart}) {
+function Input({ addToCart, removeFromCart, favorites, toggleFavorite }) {
     const NO_POPULAR_MOVIES_DISPLAYED = 10;
     const [searchQuery, setSearchQuery] = useState("");
     const [medias, setMedias] = useState([]);
@@ -95,6 +95,8 @@ function Input({addToCart, removeFromCart}) {
                             media={media} 
                             addToCart={addToCart} 
                             removeFromCart={removeFromCart} 
+                            favorites={favorites}
+                            toggleFavorite={toggleFavorite}
                         />
                     )}
             </div>

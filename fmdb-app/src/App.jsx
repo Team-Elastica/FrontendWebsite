@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import { database } from './firebase';
+import { ref, set, remove, get } from "firebase/database";
 
 import './App.css'
 import Header from './Header';
@@ -10,12 +12,17 @@ import Cart from './Cart';
 import Login from './Login'; 
 import Signup from './signUp';
 import Hero from './Hero';
+import FavoritesPage from './favorites';
+
 import {getPopularMedia, get_closest_keystroke_match, get_recommendations} from "./services/api"
 
 
 function App() {
   /*cart of movies user chooses*/
+  const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
+  const [user, setUser] = useState(null);
+
   /*state to track recommendations*/
   const [recommendations, setRecommendations] = useState({
     movies: [],
@@ -45,16 +52,63 @@ function App() {
     setRecommendations(await get_recommendations(cart));
   };
 
+  const toggleFavorite = async (media) => {
+    console.log("Toggling favorite:", media);
+
+    if (!user?.uid) return alert("Please log in to manage favorites.");
+  
+    const favRef = ref(database, `users/${user.uid}/favorites/${media.id}`);
+  
+    const snapshot = await get(favRef);
+  
+    if (snapshot.exists()) {
+      // Remove from favorites
+      await remove(favRef);
+      setFavorites(prev => prev.filter(item => item.id !== media.id));
+    } else {
+      // Add to favorites
+      await set(favRef, media);
+      setFavorites(prev => [...prev, media]);
+    }
+  };
+  
+
+  useEffect(() => {
+    if (user?.uid) {
+      const userFavsRef = ref(database, `users/${user.uid}/favorites`);
+      get(userFavsRef).then(snapshot => {
+        if (snapshot.exists()) {
+          const favData = Object.values(snapshot.val());
+          setFavorites(favData);
+        } else {
+          setFavorites([]);
+        }
+      });
+    }
+  }, [user]);
+
+
   return (
     <Router>
-      <Header />
+      <Header user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={
           
       <div className="main-content">
             <Hero />
-        <Input addToCart={addToCart} removeFromCart={removeFromCart} />
-            <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} />
+            <Input 
+              addToCart={addToCart} 
+              removeFromCart={removeFromCart} 
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+              />    
+              <Cart 
+                cart={cart}
+                addToCart={addToCart}
+                removeFromCart={removeFromCart}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+              />
             <button
               className="recommend-button"
               onClick={handleRecommend}
@@ -62,11 +116,20 @@ function App() {
             >
               Recommend
             </button>
-            <Result recommendations={recommendations} addToCart={addToCart} removeFromCart={removeFromCart} />
+            <Result 
+              recommendations={recommendations}
+              addToCart={addToCart}
+              removeFromCart={removeFromCart}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+            />
           </div>
         } />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/signup" element={<Signup setUser={setUser} />} />
+        <Route path="/favorites" element={<FavoritesPage favorites={favorites} toggleFavorite={toggleFavorite} addToCart={addToCart} removeFromCart={removeFromCart}
+        />
+      } />
       </Routes>
     </Router>
   );

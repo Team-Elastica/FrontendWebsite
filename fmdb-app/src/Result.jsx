@@ -2,7 +2,7 @@ import React from 'react';
 import MediaCard from "./assets/components/MediaCard";
 import "./index.css";
 
-function Result({recommendations, addToCart, removeFromCart}) {
+function Result({ recommendations, addToCart, removeFromCart, favorites, toggleFavorite }) {
     //get each media list
     const movies = recommendations?.movies?.slice(0, 5) || [];
     const shows = recommendations?.shows?.slice(0, 5) || [];
@@ -23,6 +23,8 @@ function Result({recommendations, addToCart, removeFromCart}) {
                                 media={media} 
                                 addToCart={addToCart} 
                                 removeFromCart={removeFromCart} 
+                                favorites={favorites}
+                                toggleFavorite={toggleFavorite}
                             />
                         ))
                     ) : (
@@ -38,11 +40,13 @@ function Result({recommendations, addToCart, removeFromCart}) {
                     {shows.length > 0 ? (
                         shows.map(media => (
                             <MediaCard 
-                                key={media.id} 
-                                media={media} 
-                                addToCart={addToCart} 
-                                removeFromCart={removeFromCart} 
-                            />
+                            key={media.id} 
+                            media={media} 
+                            addToCart={addToCart} 
+                            removeFromCart={removeFromCart} 
+                            favorites={favorites}
+                            toggleFavorite={toggleFavorite}
+                        />
                         ))
                     ) : (
                         <p>No show recommendations available</p>
@@ -61,7 +65,9 @@ function Result({recommendations, addToCart, removeFromCart}) {
                                 media={media} 
                                 addToCart={addToCart} 
                                 removeFromCart={removeFromCart} 
-                            />
+                                favorites={favorites}
+                                toggleFavorite={toggleFavorite}
+                        />
                         ))
                     ) : (
                         <p>No game recommendations available</p>
