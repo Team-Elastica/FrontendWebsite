@@ -5,6 +5,11 @@ import "./assets/css/favorites.css";
 
 
 function FavoritesPage({ favorites, toggleFavorite, addToCart, removeFromCart }) {
+    const movies = favorites?.movies?.slice(0, 5) || [];
+    const shows = favorites?.shows?.slice(0, 5) || [];
+    const games = favorites?.games?.slice(0, 5) || [];
+
+
   return (
     <div className="favorites-page" style={{ padding: '40px', paddingTop: '120px' }}>
       <h2>Your Favorites</h2>
