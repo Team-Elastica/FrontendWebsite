@@ -3,12 +3,24 @@ const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 const IGDB_BASE_URL = "https://api.igdb.com/v4";
 const IGDB_AUTH_URL = "https://id.twitch.tv/oauth2/token";
 
-const IGDB_CLIENT_ID = "oykdfgwed2b8b6pldfwu48iypp7uj6"
-const IGDB_CLIENT_SECRET = "7mgcxf8993bgq820gznpm8lp33i1t4"
+const IGDB_CLIENT_ID = "oykdfgwed2b8b6pldfwu48iypp7uj6";
+const IGDB_CLIENT_SECRET = "7mgcxf8993bgq820gznpm8lp33i1t4";
+const GOOGLE_API_KEY = "AIzaSyCcUoaAwwJ-8t05trFPqtx4fD0WJZdw8lY";
+const GOOGLE_HTML_CX = "<script async src=\"https://cse.google.com/cse.js?cx=9334ba777fe7e408d\"> </script> <div class=\"gcse-search\"></div>";
 
 const TMDB_IMAGE_PATH = "https://image.tmdb.org/t/p/w500";
 
 let latest_id = 0
+
+/*
+PROGRAMMABLE SEARCH ENGINE: 
+
+<script async src="https://cse.google.com/cse.js?cx=9334ba777fe7e408d">
+</script>
+<div class="gcse-search"></div>
+
+Key: AIzaSyCcUoaAwwJ-8t05trFPqtx4fD0WJZdw8lY
+*/
 
 /*
  API CALL FUNCTIONS
@@ -40,6 +52,44 @@ export const getGameAuth = async () => {
         console.error("Failed to fetch access token:", error);
     }
 }
+
+/*
+* Get response from google images api
+*/
+export const get_google_image = async (title, type) => {
+    try {
+        // Extract the search engine ID from the HTML snippet
+        // The CX value appears to be "9334ba777fe7e408d" based on your code
+        const CX = "9334ba777fe7e408d"; // Extract this from your GOOGLE_HTML_CX
+        
+        // Properly encode the search query
+        const searchQuery = encodeURIComponent(`${title} ${type} poster`);
+        
+        // Construct the request URL with the correct CX parameter
+        const request_string = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${CX}&searchType=image&q=${searchQuery}`;
+
+        const response = await fetch(request_string);
+        
+        if (!response.ok) {
+            throw new Error(`Google API error: ${response.status} - ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+
+        // Check if there are results
+        if (data.items && data.items.length > 0) {
+            return data.items[0].link; // Return the first image URL
+        } else {
+            console.log(`No image results found for "${title} ${type} poster"`);
+            return null; // No results found
+        }
+    } catch (error) {
+        console.error(`Error fetching image for "${title}":`, error);
+        return null; // Return null on error
+    }
+}
+
+
 
 export const getPopularMovies = async () => {
     const response = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}`);
@@ -130,8 +180,8 @@ function shuffleArray(array) {
         type: type of media, either these strings {"Movie", "Show", "Game", "Fixed"}
     Output:
         array of original data wrapped with these consistent columns: [id, title, url, release_date, summary, genres, type, hasAddButton]
-*/  
-function wrapData(data, type) {
+*/
+async function wrapData(data, type) {
     if (!Array.isArray(data)) {
         throw new Error(`Expected array, but got ${typeof data}`);
     }
@@ -140,13 +190,35 @@ function wrapData(data, type) {
         return data;
     }
 
-    return data.map(item => {
-        return {                                                  
+    //list of processed items (image, and title)
+    let processed_items = []
+    for (const item of data) {
+        let media_url;
+        let media_title;
+
+        //Get title of media
+        media_title = type === "Game" ? item.name : item.title || item.name;
+
+        //poster_path column exists for Movie and Show database
+        if(type !== "Game"){
+            media_url = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+        }
+
+        //if the poster path is still empty, find the poster from google images instead
+        if(!media_url) {
+            try {
+                // Call your get_google_image function
+                media_url = await get_google_image(media_title, type);
+            } catch (error) {
+                console.error(`Failed to fetch Google image for "${media_title}":`, error);
+                media_url = "fallback_url.jpg"; // Use static fallback if Google API fails
+            }
+        }
+
+        processed_items.push({
             id: latest_id++, // Ensure unique IDs
-            title: type === "Game" ? item.name : item.title || item.name,
-            url: type === "Game" 
-                ? item.cover?.url || "fallback_url.jpg" // Fallback URL if cover.url is missing
-                : item.poster_path || "fallback_url.jpg", // Fallback for posters
+            title: media_title,
+            url: media_url, // Fallback for posters
             release_date: type === "Game" ? dateToYear(item.first_release_date) : dateToYear(item.release_date) || dateToYear(item.first_air_date),
             summary: type === "Game" ? item.summary : item.overview, // Assign summary based on type
             genres: type === "Game" 
@@ -154,8 +226,10 @@ function wrapData(data, type) {
                 : (typeof item.genres === "string" ? item.genres.split(", ") : []), // Split by ", " for Movies/Shows
             type: type,
             hasAddButton: true
-        };
-    });
+        });
+
+    }
+    return processed_items;
 }
 
 function wrapData2(data, type) {
@@ -184,6 +258,35 @@ function wrapData2(data, type) {
         };
     });
 }
+
+
+
+// function wrapData(data, type) {
+//     if (!Array.isArray(data)) {
+//         throw new Error(`Expected array, but got ${typeof data}`);
+//     }
+    
+//     if (type === "Fixed") {
+//         return data;
+//     }
+
+//     return data.map(item => {
+//         return {                                                  
+//             id: latest_id++, // Ensure unique IDs
+//             title: type === "Game" ? item.name : item.title || item.name,
+//             url: type === "Game" 
+//                 ? item.cover?.url || "fallback_url.jpg" // Fallback URL if cover.url is missing
+//                 : item.poster_path || "fallback_url.jpg", // Fallback for posters
+//             release_date: type === "Game" ? dateToYear(item.first_release_date) : dateToYear(item.release_date) || dateToYear(item.first_air_date),
+//             summary: type === "Game" ? item.summary : item.overview, // Assign summary based on type
+//             genres: type === "Game" 
+//                 ? (Array.isArray(item.Genres) ? item.Genres : []) // Ensure it's an array
+//                 : (typeof item.genres === "string" ? item.genres.split(", ") : []), // Split by ", " for Movies/Shows
+//             type: type,
+//             hasAddButton: true
+//         };
+//     });
+// }
 
 function dateToYear(date) {
     return new Date(date).getFullYear();

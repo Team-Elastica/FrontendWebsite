@@ -19,7 +19,7 @@ function MediaCard({ media, addToCart, removeFromCart, favorites, toggleFavorite
 
     return <div className="media-card">
         <div className = "media-poster">
-            <img src={`https://image.tmdb.org/t/p/w500${media.url}`} alt={media.title}></img>
+            <img src={`${media.url}`} alt={media.title}></img>
         </div>
         <div className="media-overlay">
             <button className="favourite-btn" onClick={onFavouriteClick}> 
