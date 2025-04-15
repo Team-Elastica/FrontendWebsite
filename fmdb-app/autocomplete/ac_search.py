@@ -6,7 +6,10 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
 # Connect to Elasticsearch running in Docker
-es = Elasticsearch("http://localhost:9200")
+es = Elasticsearch(
+  "https://localhost:9200",
+  api_key="Q1MwNk81WUI3TTE1bXZ3X2RnTlE6ZVYxZFZEcmNSaGlLaFNST1IybUNvdw=="
+)
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -29,7 +32,11 @@ def search():
         }
     }
 
-    indices = ["movies_index", "tvshows_index", "games_index"]
+    movie = "movie"
+    tvShow = "tv_show"
+    game = "game"
+
+    indices = [movie, tvShow, game]
     response = es.search(index=",".join(indices), body=search_query)
 
     results = []
@@ -38,11 +45,11 @@ def search():
         results.append({
             "id": hit["_id"],
             "title": source.get("title") or source.get("Title") or source.get("name"),
-            "poster_path": source.get("poster_path") if hit["_index"] == "movies_index" else source.get("poster_path") if hit["_index"] == "tvshows_index" else "_placeholder_",
-            "release_date": source.get("release_date") if hit["_index"] == "movies_index" else source.get("first_air_date") if hit["_index"] == "tvshows_index" else source.get("Release_Date"),
-            "summary": source.get("overview") if hit["_index"] == "movies_index" else source.get("overview") if hit["_index"] == "tvshows_index" else source.get("Summary"),
-            "genres": source.get("genres") if hit["_index"] == "movies_index" else source.get("genres") if hit["_index"] == "tvshows_index" else source.get("Genres"),
-            "type": "Movie" if hit["_index"] == "movies_index" else "TV Show" if hit["_index"] == "tvshows_index" else "Game",
+            "poster_path": source.get("poster_path") if hit["_index"] == movie else source.get("poster_path") if hit["_index"] == tvShow else "_placeholder_",
+            "release_date": source.get("release_date") if hit["_index"] == movie else source.get("first_air_date") if hit["_index"] == tvShow else source.get("Release_Date"),
+            "summary": source.get("overview") if hit["_index"] == movie else source.get("overview") if hit["_index"] == tvShow else source.get("Summary"),
+            "genres": source.get("genres") if hit["_index"] == movie else source.get("genres") if hit["_index"] == tvShow else source.get("Genres"),
+            "type": "Movie" if hit["_index"] == movie else "TV Show" if hit["_index"] == tvShow else "Game",
         })
 
     return jsonify({"results": results})
