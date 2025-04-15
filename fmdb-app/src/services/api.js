@@ -232,7 +232,7 @@ async function wrapData(data, type) {
     return processed_items;
 }
 
-function wrapData2(data, type) {
+async function wrapData2(data, type) {
     if (!Array.isArray(data)) {
         throw new Error(`Expected array, but got ${typeof data}`);
     }
@@ -241,13 +241,34 @@ function wrapData2(data, type) {
         return data;
     }
 
-    return data.map(item => {
-        return {                                                  
+    //list of processed items (image, and title)
+    let processed_items = []
+    for (const item of data) {
+        let media_url;
+        let media_title;
+
+        media_title = item.title
+
+        //poster_path column exists for Movie and Show database
+        if(type !== "Game"){
+            media_url = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+        }
+
+        //if the poster path is still empty, find the poster from google images instead
+        if(!media_url) {
+            try {
+                // Call your get_google_image function
+                media_url = await get_google_image(media_title, type);
+            } catch (error) {
+                console.error(`Failed to fetch Google image for "${media_title}":`, error);
+                media_url = "fallback_url.jpg"; // Use static fallback if Google API fails
+            }
+        }
+
+        processed_items.push({
             id: latest_id++, // Ensure unique IDs
-            title: type === "Game" ? item.title : item.title || item.name,
-            url: type === "Game" 
-                ? item.poster_path || "fallback_url.jpg" // Fallback URL if cover.url is missing
-                : item.poster_path || "fallback_url.jpg", // Fallback for posters
+            title: media_title,
+            url: media_url, // Fallback for posters
             release_date: type === "Game" ? dateToYear(item.release_date) : dateToYear(item.release_date) || dateToYear(item.first_air_date),
             summary: type === "Game" ? item.summary : item.summary, // Assign summary based on type
             genres: type === "Game" 
@@ -255,8 +276,10 @@ function wrapData2(data, type) {
                 : (typeof item.genres === "string" ? item.genres.split(", ") : []), // Split by ", " for Movies/Shows
             type: type,
             hasAddButton: true
-        };
-    });
+        });
+
+    }
+    return processed_items; 
 }
 
 
