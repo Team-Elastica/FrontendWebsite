@@ -12,7 +12,7 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 
 client = Elasticsearch(
   "https://localhost:9200",
-  api_key="elhUTjhaUUJiM0VoczFmMGl6bmM6b1lLbjljeGNRTEMyc0RRN1A4RmtPdw=="
+  api_key="Q1MwNk81WUI3TTE1bXZ3X2RnTlE6ZVYxZFZEcmNSaGlLaFNST1IybUNvdw=="
 )
 
 @app.route("/semanticSearch", methods=["GET"])
@@ -149,6 +149,9 @@ def formatMedia(mediaData, type):
             "type": type,
             "hasAddButton": True
         }
+
+        if type != "Game":
+            data["url"] = "https://image.tmdb.org/t/p/w500" + data["url"]
 
         medias.append(data)
 

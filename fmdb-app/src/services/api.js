@@ -189,7 +189,7 @@ async function wrapData(data, type) {
     if (type === "Fixed") {
         return data;
     }
-
+    
     //list of processed items (image, and title)
     let processed_items = []
     for (const item of data) {
