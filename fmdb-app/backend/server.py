@@ -152,7 +152,7 @@ def formatMedia(mediaData, type):
 
         if type != "Game":
             data["url"] = "https://image.tmdb.org/t/p/w500" + data["url"]
-
+            
         medias.append(data)
 
         idNum += 1

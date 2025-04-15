@@ -444,6 +444,22 @@ export async function get_recommendations(medias){
 
         let game_matches = result.games; 
 
+        for (let index = 0; index < 5; index++) {
+            let data = game_matches[index]
+            
+            let media_title = data["title"]
+            let media_url = null
+            try {
+                // Call your get_google_image function
+                media_url = await get_google_image(media_title, "Game");
+            } catch (error) {
+                console.error(`Failed to fetch Google image for "${media_title}":`, error);
+                media_url = "fallback_url.jpg"; // Use static fallback if Google API fails
+            }
+
+            data["url"] = media_url
+        }
+
         //assign the dictionary values accordingly before returning [KEEP]
         matches_dict.movies = movie_matches;
         matches_dict.games = game_matches;
