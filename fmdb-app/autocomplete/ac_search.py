@@ -54,6 +54,49 @@ def search():
         }
     }
 
+#     search_query = {
+#     "size": 10,
+#     "query": {
+#         "bool": {
+#             "must": {
+#                 "multi_match": {
+#                     "query": query,
+#                     "fields": [
+#                         "title", "Title", "name"
+#                     ],
+#                     "fuzziness": "AUTO"
+#                 }
+#             },
+#             "should": [
+#                 {
+#                     "bool": {
+#                         "must": {
+#                             "term": { "_index": "game" }
+#                         }
+#                     }
+#                 },
+#                 {
+#                     "bool": {
+#                         "must": [
+#                             { "term": { "_index": "movie" } },
+#                             { "term": { "adult": False } }
+#                         ]
+#                     }
+#                 },
+#                 {
+#                     "bool": {
+#                         "must": [
+#                             { "term": { "_index": "tv_show" } },
+#                             { "term": { "adult": False } }
+#                         ]
+#                     }
+#                 }
+#             ],
+#             "minimum_should_match": 1
+#         }
+#     }
+# }
+
     movie = "movie"
     tvShow = "tv_show"
     game = "game"

@@ -5,9 +5,8 @@ const IGDB_AUTH_URL = "https://id.twitch.tv/oauth2/token";
 
 const IGDB_CLIENT_ID = "oykdfgwed2b8b6pldfwu48iypp7uj6";
 const IGDB_CLIENT_SECRET = "7mgcxf8993bgq820gznpm8lp33i1t4";
-const GOOGLE_API_KEY = "AIzaSyCcUoaAwwJ-8t05trFPqtx4fD0WJZdw8lY";
-const GOOGLE_HTML_CX = "<script async src=\"https://cse.google.com/cse.js?cx=9334ba777fe7e408d\"> </script> <div class=\"gcse-search\"></div>";
-
+const GOOGLE_API_KEY = "AIzaSyCnGyLmXTyiWD5X5blN2etImbpqMeew16w";
+const GOOGLE_HTML_CX = "<script async src=\"https://cse.google.com/cse.js?cx=233bba894e7e4404d\"></script><div class=\"gcse-search\"></div>"
 const TMDB_IMAGE_PATH = "https://image.tmdb.org/t/p/w500";
 
 let latest_id = 0
@@ -60,7 +59,7 @@ export const get_google_image = async (title, type) => {
     try {
         // Extract the search engine ID from the HTML snippet
         // The CX value appears to be "9334ba777fe7e408d" based on your code
-        const CX = "9334ba777fe7e408d"; // Extract this from your GOOGLE_HTML_CX
+        const CX = "233bba894e7e4404d"; // Extract this from your GOOGLE_HTML_CX
         
         // Properly encode the search query
         const searchQuery = encodeURIComponent(`${title} ${type} poster`);
@@ -244,6 +243,7 @@ async function wrapData2(data, type) {
     //list of processed items (image, and title)
     let processed_items = []
     for (const item of data) {
+        // console.log("ITEM: " + item.poster_path)
         let media_url;
         let media_title;
 
@@ -255,6 +255,17 @@ async function wrapData2(data, type) {
         }
 
         //if the poster path is still empty, find the poster from google images instead
+        // if(media_url === "https://image.tmdb.org/t/p/w500null" || !media_url) {
+        //     try {
+        //         // Call your get_google_image function
+        //         console.error("HERE")
+        //         media_url = await get_google_image(media_title, type);
+        //     } catch (error) {
+        //         console.error(`Failed to fetch Google image for "${media_title}":`, error);
+        //         media_url = "fallback_url.jpg"; // Use static fallback if Google API fails
+        //     }
+        // }
+
         if(!media_url) {
             try {
                 // Call your get_google_image function
