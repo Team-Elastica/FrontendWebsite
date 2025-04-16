@@ -19,15 +19,37 @@ def search():
     if not query:
         return jsonify({"results": []})
 
+    # search_query = {
+    #     "size": 10,
+    #     "query": {
+    #         "multi_match": {
+    #             "query": query,
+    #             "fields": [
+    #                 "title", "Title", "name"
+    #             ],
+    #             "fuzziness": "AUTO",
+    #         }
+    #     }
+    # }
+
     search_query = {
         "size": 10,
         "query": {
-            "multi_match": {
-                "query": query,
-                "fields": [
-                    "title", "Title", "name"
-                ],
-                "fuzziness": "AUTO"
+            "bool": {
+                "must": {
+                    "multi_match": {
+                        "query": query,
+                        "fields": [
+                            "title", "Title", "name"
+                        ],
+                        "fuzziness": "AUTO"
+                    }
+                },
+                "filter": {
+                    "term": {
+                        "adult": False
+                    }
+                }
             }
         }
     }
