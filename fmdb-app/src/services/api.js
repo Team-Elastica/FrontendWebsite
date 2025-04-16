@@ -189,7 +189,7 @@ async function wrapData(data, type) {
     if (type === "Fixed") {
         return data;
     }
-
+    
     //list of processed items (image, and title)
     let processed_items = []
     for (const item of data) {
@@ -363,11 +363,24 @@ export async function get_closest_keystroke_match(keystroke) {
             const data = await response.json();
             console.log("Search Results:", data.results[0]);
             let matches = [];
+            let wrapItems = [];
             for (let i = 0; i < data.results.length; i++) {
                 const wrappedItem = wrapData2([data.results[i]], data.results[i].type); // Wrap a single item as an array
                 console.log("Wrapped Item:", wrappedItem);
-                matches = matches.concat(wrappedItem); // Append the wrapped item to the results array
+                wrapItems.push(wrappedItem); // Append the wrapped item to the results array
             }
+
+            Promise.all(wrapItems)
+                .then((results) => {
+                    results.forEach((promiseResult) => {
+                    matches.push(promiseResult[0]);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+
+            console.log("Matches: ", matches)
             return matches;
         } catch (error) {
             console.error("Failed to fetch search results:", error);
@@ -443,6 +456,22 @@ export async function get_recommendations(medias){
         let show_matches = result.tv_shows; 
 
         let game_matches = result.games; 
+
+        for (let index = 0; index < 5; index++) {
+            let data = game_matches[index]
+            
+            let media_title = data["title"]
+            let media_url = null
+            try {
+                // Call your get_google_image function
+                media_url = await get_google_image(media_title, "Game");
+            } catch (error) {
+                console.error(`Failed to fetch Google image for "${media_title}":`, error);
+                media_url = "fallback_url.jpg"; // Use static fallback if Google API fails
+            }
+
+            data["url"] = media_url
+        }
 
         //assign the dictionary values accordingly before returning [KEEP]
         matches_dict.movies = movie_matches;
